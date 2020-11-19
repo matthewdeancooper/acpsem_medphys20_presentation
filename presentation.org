@@ -1,0 +1,135 @@
+* Presentation
+** Introduction (1m)
+  - Hello everyone my name is Matthew Cooper. I a am recent graduate of the
+    master of medical physics degree from the university of Sydney.
+  - The title of todays presentation is "A clinical implementation of deep
+    learning: Automatic contouring via U-Net architecture".
+  - I have been invited to discuss the research I completed during my degree and in
+    particular focus on some of the software that was written to deploy the
+    model to the clinic.
+  - Ill spend about 5 minutes providing some background, before I move onto the
+    fun stuff. Talking about development. And if entropy is on
+    my side I might get to execute some live code for a demonstration.
+  - A link to the my thesis as well as the code documentation page is included
+    on this slide.
+** Motivation (1.3m)
+   - Accurate contouring is a critical aspect of safe and
+     effective treatment delivery in radiotherapy.
+   - However, there exists uncertainty in the definition of anatomical region of
+     interest from medical imaging between experts. This is refereed to as inter
+     observer variance or IOV and is often cited as the largest source of error in
+     treatment delivery.
+   - Correspondingly, in 2020 an AAPM task group risk assessment highlighted
+     multiple human-factor failure modes in RT relating to contour generation.
+   - An additional limitation to clinical practise is the time constraints on
+     contour generation and correction. Current contouring methods have been reported to
+     take experts up to 1 hour for pelvic organs or up to 4 hours in the case
+     the case of head and neck segmentation.
+   - Crucially, these time constraints are posing barrier to the adoption of new
+     technologies such as adaptive radiotherapy which has the potential to
+     introduce a new standard of care in RT.
+   - Deep learning methods have demonstrated the potential to overcome current
+     clinical limitations. When automatic contours are used as a starting
+     reference for manual correction, both contouring time and IOV decreases.
+   - Additionally, deep learning methods have shown significant improvements
+     over traditional atlas based methods in both time and accuracy and are now
+     considered SOTA.
+# ** sDSC vs DSC
+** Application
+   - In an attempt to address these limitation, this study designed and
+     evaluated a 2D U-Net architecture with two primary aims:
+
+    1) Develop a pelvic imaging quality QA tool for use in RT, comparing
+    model predictions with expert contours to identify macro contouring errors.
+     We believe a contour QA tool has the potential to manage some prominent hazards
+     identified by the task group
+
+    2) Aimed to automate a time consuming aspect of canine RT, manual vacuum bag
+       segmentation. Which has been reported to take approximately 30 minutes
+       per patient.
+
+    To evaluate model performance we the surface dice similarity coefficient. A
+     relatively new metric that takes into account expert variance and returns
+     the fraction of surface points that are within expert IOV.
+
+     We make use of this metric  as the literature has indicated a stronger
+     correlation with correction time when compared to traditional metrics such
+     as the DSC
+
+     *** 3.20m
+
+** Model architecture
+   For those that havent seen before, this is what a 2D U-Net architecture looks
+   like - I only want you to get a high level overview here.
+
+   It is composed of two primary pathways:
+
+   1 - On the LHS we have the encoding pathway (in blue) that down-samples the resolution
+   of the input at each level while increasing the number of features that have
+   been extracted via convolutional operations.
+   2 - On the RHS we have the decoding pathway (in yellow) that up-samples
+   low resolution features, concatenates them with higher resolution features sent
+   from the residual connection.
+
+   If you remember one thing from this busy slide I want you to notice the
+   pattern of decreasing the spatial resolution, recovering the spatial
+   resolution, and concatenating it with higher resolution features.
+
+** Why down sample
+   1 - Reduces the total size of feature representations. Currently there are
+   hard GPU memory constraints that limit the depth, resolution, and complexity
+   of model architecture. The success in computer vision is in part due to
+   convolutional operations encoding some fundamental assumptions about our data
+   into our model and reducing the number of trainable parameters when compared
+   to fully connected networks.
+
+   2 - Additionally, leverage down-sampling to facilitate multi-resolution
+   analysis. If you imagine keeping the size of a convolutional kernel
+   constant - seen in grey - while reducing the resolution of the image, we are
+   effectively increasing the relative size of the kernel, allowing for the
+   extraction of spatially broader features (general localisation) without the
+   memory overhead that a larger kernel would include. By concatenating together
+   multi-resolution feature representations we are able to detect, localise, and
+   produce high-resolution border segmentation.
+
+   7 minutes
+
+** Modules required
+   Deep learning models share a common set of modules that can be broken down into
+   data wrangling, training, and deployment.
+   This slide lists the steps or coding packages that we had to develop in order
+   to translate from an idea to part of the clinical workflow.
+
+   Now for the most part there is enough information online about how to deal
+   with data wrangling and training. However, I found less information about how
+   to successfully deploy a model to a clinical environment - so I would like to
+   focus on deployment, but I am happy to answer any questions everyone has.
+** Dicom networking
+   Video demonstration
+
+   We were unable to preform inference locally at clinic A due to hardware
+   constrains. Therefore, we bridged a connection to another clinic via SSH and
+   were then able to communicate between sites by sending network requests to a
+   local IP address using the same port.
+
+   We used pynetdicom as our networking protocol for building DICOM service
+   class users and providers. A provider includes instructions for completing a
+   task - i.e., how to store a set of images.
+   While a class user requests to utilise the functionality of a provider -
+   i.e., can you store these images.
+
+   The treatment planning system exports an imaging series to the dicom server
+   by issuing a storage request. After storage, the server forwards the series to a
+   tensorflow model that infers the contours. These contours are translated to a
+   dicom rt structure file that is then forwarded back to the TPS by another
+   storage request.
+
+** Coding
+   - Pynetdicom uses multi-threading for network requests. This allows it to
+     handle multiple requests simultaneously. However, this is not the case with
+     tensorflow where a single instance of the model is pushing the memory
+     limitations of the GPU. If the model worked succesffuly
+     for a single imaging series, we knew the first thing a clinic would try
+     and do is send more and more. Therefore, we wrote queuing protocol that would
+     allow multiple series to be sent to the dicom server
+   - Going to demonstrate this for you now
