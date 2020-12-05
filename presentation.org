@@ -1,63 +1,72 @@
 * Presentation
-** Introduction (1m)
-  - Hello everyone my name is Matthew Cooper. I a am recent graduate of the
-    master of medical physics degree from the university of Sydney.
-  - The title of todays presentation is "A clinical implementation of deep
+** Introduction (45s-1m)
+  # - Hello everyone my name is Matthew Cooper. I a am recent graduate of the
+  #   master of medical physics degree from the university of Sydney.
+
+  - This project was completed in collaboration with Simon Biggs and Matthew
+    Sobolewski from the RCCC, as well as with Yu Sun from the university of Sydney.
+
+  - The title of this presentation is "A clinical implementation of deep
     learning: Automatic contouring via U-Net architecture".
-  - I have been invited to discuss the research I completed during my degree and in
-    particular focus on some of the software that was written to deploy the
-    model to the clinic.
-  - Ill spend about 5 minutes providing some background, before I move onto the
-    fun stuff. Talking about development. And if entropy is on
-    my side I might get to execute some live code for a demonstration.
+
+  - In this summary presentation I plan to spend about 10 minutes addressing the
+    pathway we took from idea to model deployment in the clinic.
+
   - A link to the my thesis as well as the code documentation page is included
     on this slide.
 ** Motivation (1.3m)
-   - Accurate contouring is a critical aspect of safe and
-     effective treatment delivery in radiotherapy.
+   - Accurate contouring is a critical aspect of safe and effective treatment
+     delivery in radiotherapy.
    - However, there exists uncertainty in the definition of anatomical region of
      interest from medical imaging between experts. This is refereed to as inter
      observer variance or IOV and is often cited as the largest source of error in
      treatment delivery.
    - Correspondingly, in 2020 an AAPM task group risk assessment highlighted
      multiple human-factor failure modes in RT relating to contour generation.
-   - An additional limitation to clinical practise is the time constraints on
-     contour generation and correction. Current contouring methods have been reported to
-     take experts up to 1 hour for pelvic organs or up to 4 hours in the case
-     the case of head and neck segmentation.
+
+   - An additional limitation to clinical practise is the current time
+     constraints on contour generation and correction. Current computer aided
+     methods have been reported to take up to 1 hour for pelvic
+     organs.
    - Crucially, these time constraints are posing barrier to the adoption of new
      technologies such as adaptive radiotherapy which has the potential to
      introduce a new standard of care in RT.
-   - Deep learning methods have demonstrated the potential to overcome current
-     clinical limitations. When automatic contours are used as a starting
+
+   - Deep learning methods have demonstrated the potential to overcome
+     these limitations. When automatic contours are used as a starting
      reference for manual correction, both contouring time and IOV decreases.
    - Additionally, deep learning methods have shown significant improvements
      over traditional atlas based methods in both time and accuracy and are now
-     considered SOTA.
-# ** sDSC vs DSC
+     considered SOTA in research.
 ** Application
    - In an attempt to address these limitation, this study designed and
      evaluated a 2D U-Net architecture with two primary aims:
 
-    1) Develop a pelvic imaging quality QA tool for use in RT, comparing
-    model predictions with expert contours to identify macro contouring errors.
-     We believe a contour QA tool has the potential to manage some prominent hazards
-     identified by the task group
+    1) Develop a pelvic imaging quality QA tool for use in RT, comparing model
+       predictions with expert contours to identify macro contouring errors.
+       The aim was to manage some prominent hazards identified by the task
+       group.
 
-    2) Aimed to automate a time consuming aspect of canine RT, manual vacuum bag
-       segmentation. Which has been reported to take approximately 30 minutes
-       per patient.
+    2) To automate a time consuming aspect of canine RT. Vacuum bags were
+       delineated manually as the small animal hospital with a reported
+       completion time of 30 minutes per patient.
 
-    To evaluate model performance we the surface dice similarity coefficient. A
-     relatively new metric that takes into account expert variance and returns
-     the fraction of surface points that are within expert IOV.
+       We focused model deployment on an animal hospital, as this was the
+       fastest way to get a product into the hands of clinicians for feedback on
+       the utility of the project.
 
-     We make use of this metric  as the literature has indicated a stronger
-     correlation with correction time when compared to traditional metrics such
-     as the DSC
 
-     *** 3.20m
+    - To achieve these aims would require performance similar to human experts.
+      To evaluate our model we used the surface dice similarity coefficient. A
+      relatively new metric that takes into account expert variance specific to
+      each organ and returns the fraction of surface points that are within
+      IOV tolerances.
 
+    - We make use of this metric as the literature has indicated a stronger
+      correlation with correction time when compared to traditional metrics
+      such as the volumetric DSC
+
+** sDSC vs DSC
 ** Model architecture
    For those that havent seen before, this is what a 2D U-Net architecture looks
    like - I only want you to get a high level overview here.
