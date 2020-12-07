@@ -1,6 +1,6 @@
 # Clinical application of deep learning: <br> Automatic contouring via U-Net architecture
 
-This is a shortened version of my origional masters presentation, adapted for the ACPSEM MedPhys20 research symposium.
+Presentation adapted for the ACPSEM MedPhys20 research symposium.
 
 A compiled pdf is available: `masters_presentation_short/main.pdf`
 
