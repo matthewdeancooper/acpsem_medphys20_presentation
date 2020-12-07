@@ -4,8 +4,11 @@ This is a shortened version of my origional masters presentation, adapted for th
 
 A compiled pdf is available: `masters_presentation_short/main.pdf`
 
-A video overview of the clinical implementation is available:
+Video overview of the clinical implementation:
 [docs.pymedphys/com/background/autocontouring](https://docs.pymedphys.com/background/autocontouring.html)
+
+Supporting thesis:
+[github.com/matthewdeancooper/masters_thesis](https://github.com/matthewdeancooper/masters_thesis)
 
 
 ## Abstract
