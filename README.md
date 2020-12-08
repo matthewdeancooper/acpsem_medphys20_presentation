@@ -2,7 +2,8 @@
 
 Presentation adapted for the ACPSEM MedPhys20 research symposium.
 
-A compiled pdf is available: `masters_presentation_short/main.pdf`
+A compiled pdf is available:
+[masters_presentation_short/main.pdf](https://github.com/matthewdeancooper/masters_presentation_short/blob/main/main.pdf)
 
 Video overview of this presentation: Available after the conference 15/12/20
 
