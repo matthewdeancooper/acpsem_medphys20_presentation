@@ -1,60 +1,55 @@
 * Presentation
-** Introduction (45s-1m)
-  # - Hello everyone my name is Matthew Cooper. I a am recent graduate of the
-  #   master of medical physics degree from the university of Sydney.
+** Introduction (45s)
+  - Hello everyone my name is Matthew Cooper. I a am recent
+    medical physics graduate from the university of Sydney.
 
   - This project was completed in collaboration with Simon Biggs and Matthew
     Sobolewski from the RCCC, as well as with Yu Sun from the university of Sydney.
 
-  - The title of this presentation is "A clinical implementation of deep
+  - The title of todays presentation is "A clinical implementation of deep
     learning: Automatic contouring via U-Net architecture".
 
-  - In this summary presentation I plan to spend about 10 minutes addressing the
-    pathway we took from idea to model deployment in the clinic.
+  - In this presentation I plan to spend about 10 minutes walking through our
+    research from clinical need to deployment.
 
-  - A link to the my thesis as well as the code documentation page is included
-    on this slide.
-** Motivation (1.3m)
+  # - During my masters project we developed multiple contouring models
+  #   and were able to
+  # - A link to the supporting thesis is included on this slide as well as a video
+  #   overview of the implementation hosted on the PyMedPhys documentation page.
+
+** Limitations (1.3m)
    - Accurate contouring is a critical aspect of safe and effective treatment
-     delivery in radiotherapy.
-   - However, there exists uncertainty in the definition of anatomical region of
-     interest from medical imaging between experts. This is refereed to as inter
+     delivery in radiotherapy. However, there are some current limitations.
+
+   - There exists variance between medical experts in the definition of
+     anatomical regions from medical images. This is refereed to as inter
      observer variance or IOV and is often cited as the largest source of error in
      treatment delivery.
-   - Correspondingly, in 2020 an AAPM task group risk assessment highlighted
-     multiple human-factor failure modes in RT relating to contour generation.
+   # - In 2020 an AAPM task group risk assessment highlighted
+   #   multiple human-factor failure modes in RT relating to contour generation.
 
-   - An additional limitation to clinical practise is the current time
-     constraints on contour generation and correction. Current computer aided
-     methods have been reported to take up to 1 hour for pelvic
-     organs.
-   - Crucially, these time constraints are posing barrier to the adoption of new
-     technologies such as adaptive radiotherapy which has the potential to
-     introduce a new standard of care in RT.
+   - In addition, current time contrasts from traditional atlas techniques
+     are a barrier to the adoption of new technologies such as adaptive radiotherapy that
+     require fast contouring
 
-   - Deep learning methods have demonstrated the potential to overcome
-     these limitations. When automatic contours are used as a starting
-     reference for manual correction, both contouring time and IOV decreases.
-   - Additionally, deep learning methods have shown significant improvements
-     over traditional atlas based methods in both time and accuracy and are now
-     considered SOTA in research.
-** Application
-   - In an attempt to address these limitation, this study designed and
-     evaluated a 2D U-Net architecture with two primary aims:
+   - Recently, deep learning methods have demonstrated the potential to overcome these
+     limitations with significant improvements over atlas based methods
+     in both time and accuracy and are now considered the SOTA in research.
 
-    1) Develop a pelvic imaging quality QA tool for use in RT, comparing model
+** Application ()
+   - This study designed and evaluated a 2D U-Net architecture with two primary
+     aims:
+
+    1) Develop a pelvic imaging quality QA tool, comparing model
        predictions with expert contours to identify macro contouring errors.
-       The aim was to manage some prominent hazards identified by the task
-       group.
+       Here we contoured patient, bladder and rectum regions.
 
     2) To automate a time consuming aspect of canine RT. Vacuum bags were
        delineated manually as the small animal hospital with a reported
        completion time of 30 minutes per patient.
 
        We focused model deployment on an animal hospital, as this was the
-       fastest way to get a product into the hands of clinicians for feedback on
-       the utility of the project.
-
+       fastest way to get a product into the hands of clinicians for feedback.
 
     - To achieve these aims would require performance similar to human experts.
       To evaluate our model we used the surface dice similarity coefficient. A
@@ -62,12 +57,13 @@
       each organ and returns the fraction of surface points that are within
       IOV tolerances.
 
-    - We make use of this metric as the literature has indicated a stronger
+    - We made use of this metric as the literature indicated a stronger
       correlation with correction time when compared to traditional metrics
       such as the volumetric DSC
 
-** sDSC vs DSC
-** Model architecture
+** sDSC vs DSC ()
+
+** Model architecture ()
    For those that havent seen before, this is what a 2D U-Net architecture looks
    like - I only want you to get a high level overview here.
 
@@ -84,26 +80,29 @@
    pattern of decreasing the spatial resolution, recovering the spatial
    resolution, and concatenating it with higher resolution features.
 
-** Why down sample
-   1 - Reduces the total size of feature representations. Currently there are
-   hard GPU memory constraints that limit the depth, resolution, and complexity
-   of model architecture. The success in computer vision is in part due to
-   convolutional operations encoding some fundamental assumptions about our data
-   into our model and reducing the number of trainable parameters when compared
-   to fully connected networks.
 
-   2 - Additionally, leverage down-sampling to facilitate multi-resolution
-   analysis. If you imagine keeping the size of a convolutional kernel
-   constant - seen in grey - while reducing the resolution of the image, we are
-   effectively increasing the relative size of the kernel, allowing for the
-   extraction of spatially broader features (general localisation) without the
-   memory overhead that a larger kernel would include. By concatenating together
-   multi-resolution feature representations we are able to detect, localise, and
-   produce high-resolution border segmentation.
+# ** Why down sample
+#    1 - Reduces the total size of feature representations. Currently there are
+#    hard GPU memory constraints that limit the depth, resolution, and complexity
+#    of model architecture. The success in computer vision is in part due to
+#    convolutional operations encoding some fundamental assumptions about our data
+#    into our model and reducing the number of trainable parameters when compared
+#    to fully connected networks.
 
-   7 minutes
+#    2 - Additionally, leverage down-sampling to facilitate multi-resolution
+#    analysis. If you imagine keeping the size of a convolutional kernel
+#    constant - seen in grey - while reducing the resolution of the image, we are
+#    effectively increasing the relative size of the kernel, allowing for the
+#    extraction of spatially broader features (general localisation) without the
+#    memory overhead that a larger kernel would include. By concatenating together
+#    multi-resolution feature representations we are able to detect, localise, and
+#    produce high-resolution border segmentation.
 
-** Modules required
+#    7 minutes
+
+
+** Modules required ()
+
    Deep learning models share a common set of modules that can be broken down into
    data wrangling, training, and deployment.
    This slide lists the steps or coding packages that we had to develop in order
@@ -113,8 +112,8 @@
    with data wrangling and training. However, I found less information about how
    to successfully deploy a model to a clinical environment - so I would like to
    focus on deployment, but I am happy to answer any questions everyone has.
-** Dicom networking
-   Video demonstration
+
+** Deployment ()
 
    We were unable to preform inference locally at clinic A due to hardware
    constrains. Therefore, we bridged a connection to another clinic via SSH and
@@ -133,12 +132,8 @@
    dicom rt structure file that is then forwarded back to the TPS by another
    storage request.
 
-** Coding
-   - Pynetdicom uses multi-threading for network requests. This allows it to
-     handle multiple requests simultaneously. However, this is not the case with
-     tensorflow where a single instance of the model is pushing the memory
-     limitations of the GPU. If the model worked succesffuly
-     for a single imaging series, we knew the first thing a clinic would try
-     and do is send more and more. Therefore, we wrote queuing protocol that would
-     allow multiple series to be sent to the dicom server
-   - Going to demonstrate this for you now
+** Results ()
+
+** Structure specific metrics ()
+
+** Conclusion ()

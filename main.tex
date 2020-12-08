@@ -46,7 +46,7 @@
 	\small \textbf{Thesis:} \href{https://github.com/matthewdeancooper/masters_thesis}{github.com/matthewdeancooper/masters\_thesis}
 	\vspace{1mm}
 
-	\textbf{Docs:} \href{https://docs.pymedphys.com/background/autocontouring.html}{docs.pymedphys/com/background/autocontouring}
+	\textbf{Video overview:} \href{https://docs.pymedphys.com/background/autocontouring.html}{docs.pymedphys/com/background/autocontouring}
 	\vspace{7mm}
 
 	\noindent
@@ -90,7 +90,7 @@
 %\end{frame}
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Introduction: Motivation}
+\begin{frame}{Limitations}
 \textbf{Variability}
 \begin{itemize}
 \item Large intra and inter-observer variance (IOV).\footnotemark[1]
@@ -103,6 +103,7 @@
 \end{itemize}
 \footnotetext[1]{\fullcite{Roach_2019}}
 \footnotetext[2]{\fullcite{Ford2020}}
+\vspace{4mm}
 
 \textbf{Time constraints}
 \begin{itemize}
@@ -113,6 +114,7 @@
 	% 	\item Adaptive RT
 	% \end{itemize}
 \end{itemize}
+\vspace{4mm}
 
 \textbf{Current deep learning methods}
 \begin{itemize}
@@ -128,9 +130,10 @@
 %
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Introduction: Clinical application}
+\begin{frame}{Application}
 
-\textbf{Model 1:} QA tool (RCCC) - Pelvic imaging (Patient, bladder, rectum).
+% \textbf{Model 1:} QA tool (RCCC) - Pelvic imaging (Patient, bladder, rectum).
+\textbf{Model 1:} QA tool - Pelvic imaging (Patient, bladder, rectum).
 \begin{itemize}
 %\item Manual contouring.
 \item Need for delineation to be part of regular QA.\footnotemark[4]
@@ -140,7 +143,8 @@
 \end{itemize}
 \vspace{4mm}
 
-\textbf{Model 2:} Automatic contouring (SASH) - Canine vacuum bag
+% \textbf{Model 2:} Automatic contouring (SASH) - Canine vacuum bag
+\textbf{Model 2:} Automatic contouring - Canine vacuum bag
 \begin{itemize}
 \item Currently: Manual vacuum bag contouring ($\sim$ 30 min)
 \item Lower barrier to entry wrt. implementation.
@@ -156,6 +160,24 @@
 \footnotetext[3]{\fullcite{Nikolov_2018}}
 \footnotetext[4]{\fullcite{Vinod_2016}}
 \footnotetext[5]{\fullcite{Vaassen_2020}}
+\end{frame}
+
+% ---------------------------- FRAME ---------------------------------
+
+\begin{frame}{Surface dice similarity coefficient (sDSC)}
+  \begin{equation}
+    DSC_{1,2} = \frac{2|M_{1} \cap M_{2}|}{|M_{1}| + |M_{2}|}
+    \label{eq:sDSC}
+  \end{equation}
+  \begin{equation}
+    sDSC_{1,2}^{(\tau)} = \frac{|S_{1} \cap B_{2}^{(\tau)}| + |S_{2} \cap B_{1}^{(\tau)}|}{|S_{1}| + |S_{2}|}
+    \label{eq:sDSC}
+  \end{equation}
+  \begin{figure}
+    \includegraphics[width=0.6\textwidth]{images/sDSC}
+    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
+  \end{figure}
+  \footnotetext[3]{\fullcite{Nikolov_2018}}
 \end{frame}
 
 % ---------------------------- FRAME ---------------------------------
@@ -301,7 +323,7 @@
 
 % ---------------------------- FRAME ---------------------------------
 %%
-\begin{frame}{Method: All happy \underline{models} are alike...}
+\begin{frame}{All happy models are alike...}
 \begin{figure}
 \includegraphics[width=0.85\textwidth]{images/modules}
 \caption{Modules required for end-to-end deep learning model deployment}
@@ -311,7 +333,7 @@
 
 % ---------------------------- FRAME ---------------------------------
 %%
-\begin{frame}{Method: Clinical implementation}
+\begin{frame}{Deployment}
 \begin{figure}
 \includegraphics[width=0.75\textwidth]{images/dicom_networking}
 \caption{TPS exports to remote server via DICOM networking protocol}
@@ -379,26 +401,28 @@
 % ---------------------------- FRAME ---------------------------------
 \begin{frame}
 \begin{figure}
-\includegraphics[width=0.65\textwidth]{images/vet_vacbag}
+\includegraphics[width=0.665\textwidth]{images/vet_vacbag}
 \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
 \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
 \section{Discussion}
-\begin{frame}{Discussion: Structure specific metrics}
+\begin{frame}{Structure specific metrics}
 \input{tables/metrics}
 
-\begin{itemize}
-\item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
-\end{itemize}
+\vspace{4mm}
+% \begin{itemize}
+% \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
+% \end{itemize}
 
-\textbf{Cf. Experts IOV.}\footnotemark[2]
+\textbf{Expert IOV.}\footnotemark[2]
 \begin{itemize}
 \item Clinically 'acceptable' bladder and rectum DSC $\geq$ 0.7
 % \item 'Excellent agreement' observed for expert rectum and bladder contours.
-\item Bladder:  DSC 0.93 $\pm$ 0.03, MSD 0.99(0.30) mm.
-\item Rectum:  DSC 0.81 $\pm$ 0.07, MSD 2.862(2.066) mm.
+\item Bladder:  DSC 0.93 $\pm$ 0.03, MSD 0.9(0.3) mm.
+\item Rectum:  DSC 0.81 $\pm$ 0.07, MSD 3(2) mm.
+  \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
 \end{itemize}
 \footnotetext[2]{\fullcite{Roach_2019}}
 \footnotetext[3]{\fullcite{Nikolov_2018}}
@@ -415,7 +439,7 @@
 
 % ---------------------------- FRAME ---------------------------------
 \section{Conclusion}
-\begin{frame}{Conclusion: Summary}
+\begin{frame}{Conclusion}
 \textbf{Pelvic imaging model:}
 \begin{itemize}
 	\item Patient contouring within tolerances (DSC 0.998).
@@ -428,6 +452,7 @@
 	% (sDSC 0.876, 0.922).
 	\item Weighted soft DSC loss significantly improved performance on class imbalanced data.
   \end{itemize}
+  \vspace{4mm}
 
  \textbf{Canine imaging model:}
  \begin{itemize}
@@ -460,7 +485,7 @@
 %\begin{itemize}
 %	\item $\uparrow$ Learning of high level image feature
 %	\item $\downarrow$ Resolution $\implies$ Harder to segment small organs
-%\end{itemize}
+%\end {itemize}
 % \end{itemize}
 % \footnotetext[3]{\fullcite{Nikolov_2018}}
 % \footnotetext[6]{\fullcite{Nemoto_2020}}
@@ -468,23 +493,6 @@
 %\footnotetext[17]{\fullcite{Zhu_2018}}
 % \end{frame}
 
-% ---------------------------- FRAME ---------------------------------
-
-\begin{frame}{Appendix: Surface dice similarity coefficient (sDSC)}
-  \begin{equation}
-    DSC_{1,2} = \frac{2|M_{1} \cap M_{2}|}{|M_{1}| + |M_{2}|}
-    \label{eq:sDSC}
-  \end{equation}
-  \begin{equation}
-    sDSC_{1,2}^{(\tau)} = \frac{|S_{1} \cap B_{2}^{(\tau)}| + |S_{2} \cap B_{1}^{(\tau)}|}{|S_{1}| + |S_{2}|}
-    \label{eq:sDSC}
-  \end{equation}
-  \begin{figure}
-    \includegraphics[width=0.6\textwidth]{images/sDSC}
-    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
-  \end{figure}
-  \footnotetext[3]{\fullcite{Nikolov_2018}}
-\end{frame}
 
 % ---------------------------- FRAME ---------------------------------
 
