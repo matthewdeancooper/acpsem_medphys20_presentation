@@ -24,18 +24,26 @@
 
 \setbeamertemplate{navigation symbols}{}
 
+\setbeamercolor{author in head/foot}{bg=white}
+\setbeamercolor{title in head/foot}{bg=white}
+\setbeamercolor{date in head/foot}{bg=white}
+\setbeamercolor{date in head/foot}{fg=white}
+
 
 \begin{document}
 
-\title[U-net automated contouring]{Clinical implementation of deep learning:
+% \title[U-net automated contouring]{Clinical implementation of deep learning:
+  \title[]{Clinical implementation of deep learning:
 
 	Automatic contouring via  U-Net architecture}
 
-\author[Matthew Cooper]{\textbf{Matthew Cooper}\inst{1}\\ \small{Simon Biggs\inst{2}\\ Yu Sun\inst{1}\\ Matthew Sobolewski\inst{2}}}
+% \author[Matthew Cooper]{\textbf{Matthew Cooper}\inst{1}\\ \small{Simon Biggs\inst{2}\\ Yu Sun\inst{1}\\ Matthew Sobolewski\inst{2}}}
+\author[]{\textbf{Matthew Cooper}\inst{1}\\ \small{Simon Biggs\inst{2}\\ Yu Sun\inst{1}\\ Matthew Sobolewski\inst{2}}}
 
-\date[\today]{}
+\date[]{}
 
-\institute[USyd]{\inst{1} The University of Sydney (USyd). School of Physics.
+% \institute[USyd]{\inst{1} The University of Sydney (USyd). School of Physics.
+ \institute[]{\inst{1} The University of Sydney (USyd). School of Physics.
 
 	Institute of Medical Physics.
 	\vspace{2mm}
@@ -90,7 +98,7 @@
 %\end{frame}
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Limitations}
+\begin{frame}{Current limitations}
 \textbf{Variability}
 \begin{itemize}
 \item Large intra and inter-observer variance (IOV).\footnotemark[1]
@@ -116,7 +124,7 @@
 \end{itemize}
 \vspace{4mm}
 
-\textbf{Current deep learning methods}
+\textbf{Deep learning potential}
 \begin{itemize}
 	\item Shown to reduce IOV and contouring time.\footnotemark[3]
 	\item Significant improvement cf. atlas methods (time \& accuracy).\footnotemark[4]
@@ -130,15 +138,15 @@
 %
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Application}
+\begin{frame}{Research goals}
 
 % \textbf{Model 1:} QA tool (RCCC) - Pelvic imaging (Patient, bladder, rectum).
-\textbf{Model 1:} QA tool - Pelvic imaging (Patient, bladder, rectum).
+\textbf{Model 1:} QA tool - Pelvic imaging for prostate cancer (Patient, bladder, rectum).
 \begin{itemize}
 %\item Manual contouring.
-\item Need for delineation to be part of regular QA.\footnotemark[4]
 % \item Potential to manage some prominent hazards identified by the task group TG275
 \item Alert if prediction differs significantly from expert.
+\item Need for delineation to be part of regular QA.\footnotemark[4]
 
 \end{itemize}
 \vspace{4mm}
@@ -146,36 +154,41 @@
 % \textbf{Model 2:} Automatic contouring (SASH) - Canine vacuum bag
 \textbf{Model 2:} Automatic contouring - Canine vacuum bag
 \begin{itemize}
-\item Currently: Manual vacuum bag contouring ($\sim$ 30 min)
-\item Lower barrier to entry wrt. implementation.
+\item Manual vacuum bag contouring $\approx$ 30 min
+% \item Lower barrier to entry wrt. implementation.
 \end{itemize}
 \vspace{3mm}
 
 \textbf{Goal:} Performance similar to human experts.
 \begin{itemize}
 \item Performance metric (sDSC) that takes into account expert IOV.\footnotemark[3]
-\item Stronger correlation with correction time cf. DSC.\footnotemark[5]
+% \item Stronger correlation with correction time cf. DSC.\footnotemark[5]
   % \item Generalise model performance to independent patient data.
 \end{itemize}
 \footnotetext[3]{\fullcite{Nikolov_2018}}
 \footnotetext[4]{\fullcite{Vinod_2016}}
-\footnotetext[5]{\fullcite{Vaassen_2020}}
+% \footnotetext[5]{\fullcite{Vaassen_2020}}
 \end{frame}
 
 % ---------------------------- FRAME ---------------------------------
 
 \begin{frame}{Surface dice similarity coefficient (sDSC)}
-  \begin{equation}
+  \begin{equation*}
     DSC_{1,2} = \frac{2|M_{1} \cap M_{2}|}{|M_{1}| + |M_{2}|}
     \label{eq:sDSC}
-  \end{equation}
-  \begin{equation}
+  \end{equation*}
+
+  \vspace{4mm}
+
+  \begin{equation*}
     sDSC_{1,2}^{(\tau)} = \frac{|S_{1} \cap B_{2}^{(\tau)}| + |S_{2} \cap B_{1}^{(\tau)}|}{|S_{1}| + |S_{2}|}
     \label{eq:sDSC}
-  \end{equation}
+  \end{equation*}
+
+  \vspace{4mm}
   \begin{figure}
     \includegraphics[width=0.6\textwidth]{images/sDSC}
-    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
+    % \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
   \end{figure}
   \footnotetext[3]{\fullcite{Nikolov_2018}}
 \end{frame}
@@ -268,16 +281,16 @@
 % \end{frame}
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{}
-\begin{figure}
-\includegraphics[width=1.0\textwidth]{images/model_diagram}
-\caption{Modified 2D U-net architecture:\footnotemark[8] Composed of encoding (blue) and decoding blocks (yellow). MaxPooling layers replaced by strided convolution.\footnotemark[11] Added batch normalisation\footnotemark[12] and final sigmoid activation.\footnotemark[3] Tensor dimensions (Batch size, X, Y, Channels).}
-\end{figure}
-\footnotetext[3]{\fullcite{Nikolov_2018}}
-\footnotetext[8]{\fullcite{Ronneberger_2015}}
-\footnotetext[11]{\fullcite{springenberg2014}}
-\footnotetext[12]{\fullcite{ioffe2015batch}}
-\end{frame}
+% \begin{frame}{}
+% \begin{figure}
+% \includegraphics[width=1.0\textwidth]{images/model_diagram}
+% \caption{Modified 2D U-net architecture:\footnotemark[8] Composed of encoding (blue) and decoding blocks (yellow). MaxPooling layers replaced by strided convolution.\footnotemark[11] Added batch normalisation\footnotemark[12] and final sigmoid activation.\footnotemark[3] Tensor dimensions (Batch size, X, Y, Channels).}
+% \end{figure}
+% \footnotetext[3]{\fullcite{Nikolov_2018}}
+% \footnotetext[8]{\fullcite{Ronneberger_2015}}
+% \footnotetext[11]{\fullcite{springenberg2014}}
+% \footnotetext[12]{\fullcite{ioffe2015batch}}
+% \end{frame}
 
 %% ---------------------------- FRAME ---------------------------------
 
@@ -323,20 +336,20 @@
 
 % ---------------------------- FRAME ---------------------------------
 %%
-\begin{frame}{All happy models are alike...}
+\begin{frame}{Modules - All happy models are alike...}
 \begin{figure}
 \includegraphics[width=0.85\textwidth]{images/modules}
-\caption{Modules required for end-to-end deep learning model deployment}
+% \caption{Modules required for end-to-end deep learning model deployment}
 \end{figure}
 \end{frame}
-%
+
 
 % ---------------------------- FRAME ---------------------------------
 %%
-\begin{frame}{Deployment}
+\begin{frame}{Deployment - DICOM networking}
 \begin{figure}
 \includegraphics[width=0.75\textwidth]{images/dicom_networking}
-\caption{TPS exports to remote server via DICOM networking protocol}
+% \caption{TPS exports to remote server via DICOM networking protocol}
 \end{figure}
 \end{frame}
 %
@@ -366,49 +379,49 @@
 % ---------------------------- FRAME ---------------------------------
 
 %%
-\begin{frame}
-\begin{figure}
-\includegraphics[width=0.65\textwidth]{images/prostate_patient}
-\caption{Representative output for \textbf{patient}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
-\end{figure}
+\begin{frame}{Pelvic imaging - Patient}
+  \begin{figure}
+    \includegraphics[width=0.65\textwidth]{images/prostate_patient}
+    % \caption{Representative output for \textbf{patient}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
+  \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}
-\begin{figure}
-\includegraphics[width=0.65\textwidth]{images/prostate_bladder}
-\caption{Representative output for \textbf{bladder}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm. sDSC calculated at $\tau$ of 1.46 mm.\footnotemark[2]}
-\end{figure}
+\begin{frame}{Pelvic imaging - Bladder}
+  \begin{figure}
+    \includegraphics[width=0.65\textwidth]{images/prostate_bladder}
+    % \caption{Representative output for \textbf{bladder}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm. sDSC calculated at $\tau$ of 1.46 mm.}
+  \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}
-\begin{figure}
-\includegraphics[width=0.65\textwidth]{images/prostate_rectum}
-\caption{Representative output for \textbf{rectum}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm. sDSC calculated at $\tau$ of 6.99 mm.\footnotemark[2]}
-\end{figure}
+\begin{frame}{Pelvic imaging - Rectum}
+  \begin{figure}
+    \includegraphics[width=0.65\textwidth]{images/prostate_rectum}
+    % \caption{Representative output for \textbf{rectum}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm. sDSC calculated at $\tau$ of 6.99 mm.}
+  \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
 % \begin{frame}{Results: Model 2 - metrics for canine imaging}
-% \input{tables/loss_vet}
-% \begin{figure}
-% \includegraphics[width=\textwidth]{images/vacbag_metrics}
-% \caption{Model training metrics for canine imaging via soft DSC loss. \textbf{Final model selected at epoch 100} due to validation loss plateau. Training time 6 hours.}
-% \end{figure}
+%   \input{tables/loss_vet}
+%   \begin{figure}
+%     \includegraphics[width=\textwidth]{images/vacbag_metrics}
+%     \caption{Model training metrics for canine imaging via soft DSC loss. \textbf{Final model selected at epoch 100} due to validation loss plateau. Training time 6 hours.}
+%   \end{figure}
 % \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}
+\begin{frame}{Canine imaging - Vacuum bag}
 \begin{figure}
 \includegraphics[width=0.665\textwidth]{images/vet_vacbag}
-\caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
+% \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
 \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
 \section{Discussion}
-\begin{frame}{Structure specific metrics}
+\begin{frame}{Structure averaged metrics}
 \input{tables/metrics}
 
 \vspace{4mm}
@@ -416,13 +429,14 @@
 % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
 % \end{itemize}
 
-\textbf{Expert IOV.}\footnotemark[2]
+\vspace{4mm}
+\textbf{Cf. Expert IOV.}\footnotemark[2]
 \begin{itemize}
 \item Clinically 'acceptable' bladder and rectum DSC $\geq$ 0.7
 % \item 'Excellent agreement' observed for expert rectum and bladder contours.
 \item Bladder:  DSC 0.93 $\pm$ 0.03, MSD 0.9(0.3) mm.
 \item Rectum:  DSC 0.81 $\pm$ 0.07, MSD 3(2) mm.
-  \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
+  % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
 \end{itemize}
 \footnotetext[2]{\fullcite{Roach_2019}}
 \footnotetext[3]{\fullcite{Nikolov_2018}}
@@ -438,19 +452,19 @@
 %
 
 % ---------------------------- FRAME ---------------------------------
-\section{Conclusion}
-\begin{frame}{Conclusion}
+\section{Summary}
+\begin{frame}{Conclusion and future work}
 \textbf{Pelvic imaging model:}
 \begin{itemize}
-	\item Patient contouring within tolerances (DSC 0.998).
-	\item Suspect more data will improve bladder and rectum volumes (DSC 0.860, 0.670).
-
-	 - cf. S.O.T.A commercial DL solution (0.97, 0.79).\footnotemark[15]
+	\item Patient contouring within tolerances
+	\item Suspect more data will improve bladder and rectum segmentation.
+	\item 3D architecture may identify gaseous rectal volumes.
+	 % - cf. S.O.T.A commercial DL solution (0.97, 0.79).\footnotemark[15]
 
 	% S.O.T.A open-source DL solution (0.95, 0.92).\footnotemark[16]
 	% \item Majority of surface correctly defined within tolerances for bladder and rectum
 	% (sDSC 0.876, 0.922).
-	\item Weighted soft DSC loss significantly improved performance on class imbalanced data.
+	% \item Weighted DSC loss significantly improved performance on class imbalanced data.
   \end{itemize}
   \vspace{4mm}
 
@@ -459,8 +473,16 @@
   \item Successfully deployed to clinic under a prototype warning
   \item Performance improvement of approximately 30 minutes per patient
 \end{itemize}
-\footnotetext[15]{\fullcite{Wong2020}}
+% \footnotetext[15]{\fullcite{Wong2020}}
 % \footnotetext[16]{\fullcite{Kazemifar_2018}}
+\vspace{4mm}
+
+\textbf{Future}
+\begin{itemize}
+\item Develop a soft surrogate for sDSC to optimise directly
+\item U-Net no longer S.O.T.A $\implies$ HR-Net.\footnotemark[16]
+\end{itemize}
+\footnotetext[16]{\fullcite{Wang2020Deep}}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
@@ -496,14 +518,14 @@
 
 % ---------------------------- FRAME ---------------------------------
 
-\begin{frame}{Appendix sDSC cf. DSC}
-	\begin{center}
-		\includegraphics[width=0.80\textwidth]{images/vaassen}
+% \begin{frame}{Appendix sDSC cf. DSC}
+% 	\begin{center}
+% 		\includegraphics[width=0.80\textwidth]{images/vaassen}
 
-		\caption{Comparison of common segmentation metrics with surface DSC (sDSC) for ability to infer absolute time required for automatic contour correction.\footnotemark[18]}
-		\footnotetext[18]{\fullcite{Vaassen_2020}}
-	\end{center}
-\end{frame}
+% 		\caption{Comparison of common segmentation metrics with surface DSC (sDSC) for ability to infer absolute time required for automatic contour correction.\footnotemark[18]}
+% 		\footnotetext[18]{\fullcite{Vaassen_2020}}
+% 	\end{center}
+% \end{frame}
 
 % ---------------------------- FRAME ---------------------------------
 \section{References}
