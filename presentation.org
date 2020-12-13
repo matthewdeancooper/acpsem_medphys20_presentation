@@ -194,6 +194,7 @@
      use within the QA tool.
    - Bladder and rectum contours may improve with a broader dataset.
    - SOTA implementations use an order of magnitude more data.
+   - 3D implementations may improve detection - significant comp. costs involved.
 
   - The canine imaging model was successfully deployed to clinic under a
     prototype warning that requests manual verification. Acceptance testing has
@@ -202,8 +203,8 @@
 
  - sDSC indicated stronger correlation with correction times in lit. To minimise
    correction times we want to optimise for this directly. Currently accepts
-   only binary data so would require a continuous surrogate for gradients to
-   be defined to use as a cost function.
+   only binary data so a continuous surrogate is needed for gradients to
+   be defined during training.
 
-- This field moves fast. U-Net is no longer SOTA. Under a re-implementation we
+ - This field moves fast. U-Net is no longer SOTA. Under a re-implementation we
   would want to examine a new type of architecture name HR-Net.

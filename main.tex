@@ -98,7 +98,7 @@
 %\end{frame}
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Current limitations}
+\begin{frame}{Contouring - Current limitations }
 \textbf{Variability}
 \begin{itemize}
 \item Large intra and inter-observer variance (IOV).\footnotemark[1]
@@ -141,10 +141,11 @@
 \begin{frame}{Research goals}
 
 % \textbf{Model 1:} QA tool (RCCC) - Pelvic imaging (Patient, bladder, rectum).
-\textbf{Model 1:} QA tool - Pelvic imaging for prostate cancer (Patient, bladder, rectum).
+\textbf{Model 1:} QA tool - Pelvic imaging for prostate cancer.
 \begin{itemize}
 %\item Manual contouring.
 % \item Potential to manage some prominent hazards identified by the task group TG275
+\item Contour patient, bladder, rectum volumes
 \item Alert if prediction differs significantly from expert.
 \item Need for delineation to be part of regular QA.\footnotemark[4]
 
@@ -154,7 +155,8 @@
 % \textbf{Model 2:} Automatic contouring (SASH) - Canine vacuum bag
 \textbf{Model 2:} Automatic contouring - Canine vacuum bag
 \begin{itemize}
-\item Manual vacuum bag contouring $\approx$ 30 min
+\item Automate time consuming aspect of canine RT
+\item Previously, manual vacuum bag contouring $\approx$ 30 min
 % \item Lower barrier to entry wrt. implementation.
 \end{itemize}
 \vspace{3mm}
@@ -172,7 +174,7 @@
 
 % ---------------------------- FRAME ---------------------------------
 
-\begin{frame}{Surface dice similarity coefficient (sDSC)}
+\begin{frame}{Performance - Surface dice similarity coefficient (sDSC)}
   \begin{equation*}
     DSC_{1,2} = \frac{2|M_{1} \cap M_{2}|}{|M_{1}| + |M_{2}|}
     \label{eq:sDSC}
