@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{physics}
+\usepackage[centre]{threeparttable}
 
 \setbeamerfont{alerted text}{series=\bfseries}
 \setbeamerfont{structure}{series=\bfseries}
@@ -188,7 +189,10 @@
   \vspace{4mm}
   \begin{figure}
     \includegraphics[width=0.6\textwidth]{images/sDSC}
-    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
+    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$,
+      surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance
+      $\tau$, and intersection of surface boundaries $S_{i} \cap
+      B_{j}^{(\tau)}$. sDSC is the percentage of surface contoured within expert IOV.\footnotemark[3]}
   \end{figure}
   \footnotetext[3]{\fullcite{Nikolov_2018}}
 \end{frame}
@@ -455,7 +459,7 @@
 % \begin{frame}{Canine imaging model - Vacuum bag}
   \begin{frame}{}
 \begin{figure}
-\includegraphics[width=0.665\textwidth]{images/vet_vacbag}
+\includegraphics[width=0.62\textwidth]{images/vet_vacbag}
 % \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
 \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow),
   prediction contour (red). Metrics: Dice similarity coefficient (DSC), and mean
@@ -468,23 +472,24 @@
 \begin{frame}{Structure averaged metrics}
 \input{tables/metrics_presentation}
 
-\vspace{4mm}
+% \vspace{4mm}
 % \begin{itemize}
 % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
 % \end{itemize}
 
 \vspace{4mm}
-\textbf{Cf. expert IOV.}\footnotemark[2]
+\textbf{Cf. expert IOV}\footnotemark[2]
 \begin{itemize}
 \item Clinically 'acceptable' bladder and rectum DSC $\geq$ 0.7
 % \item 'Excellent agreement' observed for expert rectum and bladder contours.
 % \item Bladder:  DSC 0.93 $\pm$ 0.03, MSD 0.9(0.3) mm.
 \item Bladder:  DSC 0.93(3), MSD 0.9(3) mm.
 \item Rectum:  DSC 0.81(7), MSD 3(2) mm.
-  % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
+  % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (Top 95\% expert performance).\footnotemark[3]
 \end{itemize}
 \footnotetext[2]{\fullcite{Roach_2019}}
 \footnotetext[3]{\fullcite{Nikolov_2018}}
+\vspace{2mm}
 \end{frame}
 %
 %\begin{frame}{Discussion: Structure specific metrics}
@@ -501,7 +506,7 @@
 \begin{frame}{Conclusion and future work}
 \textbf{Pelvic imaging model:}
 \begin{itemize}
-	\item Patient contouring within tolerances
+	\item Patient contouring within tolerances.
 	\item Suspect more data will improve bladder and rectum segmentation.
 	\item 3D architecture may identify gaseous rectal volumes.
 	 % - cf. S.O.T.A commercial DL solution (0.97, 0.79).\footnotemark[15]
@@ -515,8 +520,8 @@
 
  \textbf{Canine imaging model:}
  \begin{itemize}
-  \item Successfully deployed to clinic under a prototype warning
-  \item Performance improvement of approximately 30 minutes per patient
+  \item Successfully deployed to clinic under a prototype warning.
+  \item Performance improvement of approximately 30 minutes per patient.
 \end{itemize}
 % \footnotetext[15]{\fullcite{Wong2020}}
 % \footnotetext[16]{\fullcite{Kazemifar_2018}}
@@ -524,10 +529,10 @@
 
 \textbf{Future}
 \begin{itemize}
-\item Develop a soft surrogate for sDSC to optimise directly
-\item U-Net no longer S.O.T.A $\implies$ HR-Net.\footnotemark[16]
+\item Develop a continuous valued surrogate for sDSC to optimise directly.
+% \item U-Net no longer S.O.T.A $\implies$ HR-Net.\footnotemark[16]
 \end{itemize}
-\footnotetext[16]{\fullcite{Wang2020Deep}}
+% \footnotetext[16]{\fullcite{Wang2020Deep}}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------

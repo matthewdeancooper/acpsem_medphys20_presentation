@@ -2,6 +2,6 @@
  "metrics_presentation"
  (lambda ()
    (LaTeX-add-labels
-    "table:organ"))
+    "tab:addlabel"))
  :latex)
 
