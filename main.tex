@@ -116,7 +116,7 @@
 \begin{itemize}
 	% \item Manual $\implies$  $\leq$ 4 hrs (head \& neck).\footnotemark[3]
 	\item Atlas methods $\implies$ significant correction times.\footnotemark[3]
-	\item Barrier to future technologies that require fast contouring.\footnotemark[3]
+	% \item Barrier to future technologies that require fast contouring.\footnotemark[3]
 	% \begin{itemize}
 	% 	\item Adaptive RT
 	% \end{itemize}
@@ -140,35 +140,35 @@
 \begin{frame}{Research goals}
 
 % \textbf{Model 1:} QA tool (RCCC) - Pelvic imaging (Patient, bladder, rectum).
-\textbf{Model 1:} QA tool - Pelvic imaging for prostate cancer.
+\textbf{Model 1:} QA tool (prostate cancer).
 \begin{itemize}
 %\item Manual contouring.
 % \item Potential to manage some prominent hazards identified by the task group TG275
-\item Contour patient, bladder, rectum volumes
-\item Alert if prediction differs significantly from expert.
-\item Need for delineation to be part of regular QA.\footnotemark[4]
+\item Compare contours to identify macro contouring errors
+\item Contoured patient, bladder, rectum volumes.
+% \item Need for delineation to be part of regular QA.\footnotemark[3]
 
 \end{itemize}
 \vspace{4mm}
 
 % \textbf{Model 2:} Automatic contouring (SASH) - Canine vacuum bag
-\textbf{Model 2:} Automatic contouring - Canine vacuum bag
+\textbf{Model 2:} Canine vacuum bag.
 \begin{itemize}
-\item Automate time consuming aspect of canine RT
-\item Previously, manual vacuum bag contouring $\approx$ 30 min
+\item Automate time consuming aspect of canine RT.
+\item Previously, manual vacuum bag contouring $\approx$ 30 min.
 % \item Lower barrier to entry wrt. implementation.
 \end{itemize}
 \vspace{3mm}
 
 \textbf{Goal:} Performance similar to human experts.
 \begin{itemize}
-\item Performance metric (sDSC) that takes into account expert IOV.\footnotemark[3]
-% \item Stronger correlation with correction time cf. DSC.\footnotemark[5]
+\item Performance metric (sDSC) that takes into account expert IOV.\footnotemark[4]
+\item Stronger correlation with correction time cf. DSC.\footnotemark[5]
   % \item Generalise model performance to independent patient data.
 \end{itemize}
-\footnotetext[3]{\fullcite{Nikolov_2018}}
-\footnotetext[4]{\fullcite{Vinod_2016}}
-% \footnotetext[5]{\fullcite{Vaassen_2020}}
+\footnotetext[3]{\fullcite{Vinod_2016}}
+\footnotetext[4]{\fullcite{Nikolov_2018}}
+\footnotetext[5]{\fullcite{Vaassen_2020}}
 \end{frame}
 
 % ---------------------------- FRAME ---------------------------------
@@ -189,12 +189,17 @@
   \vspace{4mm}
   \begin{figure}
     \includegraphics[width=0.6\textwidth]{images/sDSC}
-    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$,
-      surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance
-      $\tau$, and intersection of surface boundaries $S_{i} \cap
-      B_{j}^{(\tau)}$. sDSC is the percentage of surface contoured within expert IOV.\footnotemark[3]}
+    % \caption{Clinical performance metric: Illustration of volume masks $M_{i}$,
+    %   surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance
+    %   $\tau$, and intersection of surface boundaries $S_{i} \cap
+    %   B_{j}^{(\tau)}$. sDSC is the percentage of surface contoured within expert IOV.\footnotemark[3]}
+
+    \caption{DSC is a volumetric overlap score, sDSC is a surface overlap score
+      - the percentage of surface contoured within an organ specific tolerance
+      representative of expert IOV.\footnotemark[3]}
+
   \end{figure}
-  \footnotetext[3]{\fullcite{Nikolov_2018}}
+  \footnotetext[4]{\fullcite{Nikolov_2018}}
 \end{frame}
 
 % ---------------------------- FRAME ---------------------------------
@@ -218,7 +223,6 @@
 
 
 % ---------------------------- FRAME ---------------------------------
-\vspace{4mm}
 % \begin{frame}{Theory: Deep learning}
 % %\textbf{Deep learning}
 % \begin{itemize}
@@ -340,38 +344,38 @@
 
 % ---------------------------- FRAME ---------------------------------
 %%
-\begin{frame}{Modules - All happy models are alike...}
+\begin{frame}{All happy models are alike...}
 \begin{figure}
 \includegraphics[width=0.85\textwidth]{images/modules_blank}
-\caption{Modules required for end-to-end deep learning model deployment}
+\caption{Modules required for end-to-end deep learning model deployment.}
 \end{figure}
 \end{frame}
 
-\begin{frame}{Modules - All happy models are alike...}
+\begin{frame}{All happy models are alike...}
   \begin{figure}
     \includegraphics[width=0.85\textwidth]{images/modules_data}
-    \caption{Modules required for end-to-end deep learning model deployment}
+    \caption{Modules required for end-to-end deep learning model deployment.}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Modules - All happy models are alike...}
+\begin{frame}{All happy models are alike...}
   \begin{figure}
     \includegraphics[width=0.85\textwidth]{images/modules_augmentation}
-    \caption{Modules required for end-to-end deep learning model deployment}
+    \caption{Modules required for end-to-end deep learning model deployment.}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Modules - All happy models are alike...}
+\begin{frame}{All happy models are alike...}
   \begin{figure}
     \includegraphics[width=0.85\textwidth]{images/modules_model}
-    \caption{Modules required for end-to-end deep learning model deployment}
+    \caption{Modules required for end-to-end deep learning model deployment.}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Modules - All happy models are alike...}
+\begin{frame}{All happy models are alike...}
   \begin{figure}
     \includegraphics[width=0.85\textwidth]{images/modules_loss}
-    \caption{Modules required for end-to-end deep learning model deployment}
+    \caption{Modules required for end-to-end deep learning model deployment.}
   \end{figure}
 \end{frame}
 
@@ -381,7 +385,7 @@
 \begin{frame}{Deployment - DICOM networking}
 \begin{figure}
 \includegraphics[width=0.75\textwidth]{images/dicom_networking}
-\caption{TPS exports to remote server via DICOM networking protocol}
+\caption{TPS exports to remote server via DICOM networking protocol.}
 \end{figure}
 \end{frame}
 %
@@ -420,6 +424,16 @@
       mean surface distance (MSD) in mm.}
   \end{figure}
 \end{frame}
+
+
+\begin{frame}{}
+  \begin{figure}
+    \includegraphics[width=0.60\textwidth]{images/prostate_patient_worst}
+    \caption{Representative output for \textbf{patient}. Truth contour (yellow),
+      prediction contour (red). Metrics: Dice similarity coefficient (DSC), and
+      mean surface distance (MSD) in mm.}
+  \end{figure}
+\end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
 % \begin{frame}{Pelvic imaging model - Bladder}
@@ -429,7 +443,7 @@
     \caption{Representative output for \textbf{bladder}. Truth contour (yellow),
       prediction contour (red).
       Metrics: Dice coefficient (DSC), surface dice coefficient (sDSC), and mean
-      surface distance (MSD) in mm}
+      surface distance (MSD) in mm.}
   \end{figure}
 \end{frame}
 
@@ -441,7 +455,7 @@
     \caption{Representative output for \textbf{bladder}. Truth contour (yellow),
       prediction contour (red).
       Metrics: Dice coefficient (DSC), surface dice coefficient (sDSC), and mean
-      surface distance (MSD) in mm}
+      surface distance (MSD) in mm.}
   \end{figure}
 \end{frame}
 %
@@ -454,7 +468,7 @@
     \caption{Representative output for \textbf{rectum}. Truth contour (yellow),
       prediction contour (red).
       Metrics: Dice coefficient (DSC), surface dice coefficient (sDSC), and mean
-      surface distance (MSD) in mm}
+      surface distance (MSD) in mm.}
   \end{figure}
 \end{frame}
 
@@ -467,7 +481,7 @@
     \caption{Representative output for \textbf{rectum}. Truth contour (yellow),
       prediction contour (red).
       Metrics: Dice coefficient (DSC), surface dice coefficient (sDSC), and mean
-      surface distance (MSD) in mm}
+      surface distance (MSD) in mm.}
   \end{figure}
 \end{frame}
 %
@@ -491,6 +505,17 @@
   surface distance (MSD) in mm.}
 \end{figure}
 \end{frame}
+
+
+\begin{frame}{}
+  \begin{figure}
+    \includegraphics[width=0.62\textwidth]{images/vet_vacbag_worst}
+    % \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
+    \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow),
+      prediction contour (red). Metrics: Dice similarity coefficient (DSC), and mean
+      surface distance (MSD) in mm.}
+  \end{figure}
+\end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
 \section{Discussion}
@@ -503,7 +528,7 @@
 % \end{itemize}
 
 \vspace{4mm}
-\textbf{Cf. expert IOV}\footnotemark[2]
+\textbf{Cf. expert IOV.}\footnotemark[1]
 \begin{itemize}
 \item Clinically 'acceptable' bladder and rectum DSC $\geq$ 0.7
 % \item 'Excellent agreement' observed for expert rectum and bladder contours.
@@ -512,8 +537,8 @@
 \item Rectum:  DSC 0.81(7), MSD 3(2) mm.
   % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (Top 95\% expert performance).\footnotemark[3]
 \end{itemize}
-\footnotetext[2]{\fullcite{Roach_2019}}
-\footnotetext[3]{\fullcite{Nikolov_2018}}
+\footnotetext[1]{\fullcite{Roach_2019}}
+% \footnotetext[4]{\fullcite{Nikolov_2018}}
 \vspace{2mm}
 \end{frame}
 %
@@ -533,7 +558,7 @@
 \begin{itemize}
 	\item Patient contouring within tolerances.
 	\item Suspect more data will improve bladder and rectum segmentation.
-	\item 3D architecture may identify gaseous rectal volumes.
+	\item 3D architecture may improve detection of gaseous rectal volumes.
 	 % - cf. S.O.T.A commercial DL solution (0.97, 0.79).\footnotemark[15]
 
 	% S.O.T.A open-source DL solution (0.95, 0.92).\footnotemark[16]

@@ -1,70 +1,175 @@
 * Presentation
 ** Introduction (15s)
-  - Hello everyone my name is Matthew Cooper.
-  - I a am recent medical physics graduate from the university of Sydney.
 
-  # - This project was completed in collaboration with Simon Biggs and Matthew
-  #   Sobolewski from the RCCC, as well as with Yu Sun from the university of Sydney.
+  - Hello everyone my name is Matthew Cooper and I am recent graduate from the
+    master of medical physics degree at the university of Sydney
 
-  - The title of this presentation is "A clinical implementation of deep
+  - The title of today's presentation is "A clinical implementation of deep
     learning: Automatic contouring via U-Net architecture".
 
-  # - I plan to spend about 10 minutes walking through our
-  #   research from clinical need to deployment.
-
-  # - During my masters project we developed multiple contouring models
-  #   and were able to
-  # - A link to the supporting thesis is included on this slide as well as a video
-  #   overview of the implementation hosted on the PyMedPhys documentation page.
-
 ** Limitations (51s)
-   - Accurate contouring is a critical aspect of safe and effective treatment
-     delivery in radiotherapy. However, there are some current limitations.
 
-   - There exists variance between medical experts in the definition of
-     anatomical regions from medical images. This is refereed to as inter
+   - Accurate contouring is a critical aspect of safe and effective treatment
+     delivery in radiotherapy. However, there are current clinical limitations.
+
+   - There exists variance in the definitions of anatomical regions between
+     medical experts from imaging data. This is referred to as inter
      observer variance or IOV and is often cited as the largest source of error
      in treatment delivery.
-   - In addition, a 2020 AAPM task group risk assessment highlighted
-     multiple human-factor failure modes in RT relating to contour generation.
 
-   - In addition, current time contrasts from traditional atlas techniques
-     are a barrier to the adoption of new technologies such as adaptive radiotherapy that
-     require fast contouring
+   - In addition, a TG275 risk assessment highlighted multiple
+     human-factor failure modes in RT relating to contour generation.
 
-   - Recently, deep learning methods have demonstrated the potential to overcome
-     these limitations with significant improvements in both time and accuracy
-     and are now considered the SOTA in research.
+   - There are also time contrasts involved in contouring and traditional computer
+     aided techniques such as atlas methods still require significant correction
+     times.
+
+   - Recently, deep learning models have demonstrated the potential to overcome
+     these limitations. When used as a starting reference they have been shown
+     to reduce variance between observers and decrease total contouring time.
+     They have also demonstrated significant improvements compared to atlas
+     methods in both time and accuracy.
 
 ** Application (50s)
+
    - In an attempt to meet these limitations, this study designed and evaluated a
      2D U-Net architecture with two primary aims:
 
-    1) Develop a pelvic imaging quality QA tool, comparing model
-       predictions with expert contours to identify macro contouring errors.
-       Here we contoured patient, bladder and rectum regions.
+   - Model 1 was designed as a QA tool for prostate cancer, we compared expert
+     contours with model predictions in an attempt identify macro contouring
+     errors. Here we contoured patient, bladder and rectum volumes.
 
-    2) To automate a time consuming aspect of canine RT. Previously, vacuum bags
-       were delineated manually with a reported completion time of 30 minutes
-       per patient.
+   - Model 2 was designed to automate a time consuming aspect of canine RT,
+     vacuum bag segmentation. Previously, vacuum bags were delineated manually
+     at clinic with a reported completion time of 30 minutes per patient.
 
-       # We focused model deployment on an animal hospital, as this was the
-       # fastest way to get a product into the hands of clinicians for feedback.
-
-    - To achieve these aims would require performance similar to human experts.
-      To quantify performance we reported the surface dice similarity
-      coefficient and the traditional volumetric dice similarity coefficient.
+   - To achieve these aims would require model performance similar to that of
+     human experts. To quantify performance we used the surface dice
+     coefficient, which is a metric that takes into account the variance between
+     experts in its assessment. And fundamentally we are interested in this
+     metric as the literature has indicated a stronger correlation with
+     corrections times when compared to the traditional dice coefficient.
 
 ** sDSC vs DSC (50)
-   - If we compare the sDSC with the DSC... The DSC is the volumetric overlap
-     score between two masks. In comparison the sDSC defines a boundary, adds an
-     organ specific tolerance representative of IOV and return the percentage of
-     surface points that are withing this tolerance and theoretically would not
-     need to be corrected
 
-    - and the literature indicated a stronger correlation with correction
-      time when compared to the traditional volumetric DSC
+   - Now, If we compare the SURFACE dice with the traditional dice coefficient
+     we see that the dice takes the intersections of two masks and returns the
+     fraction of volumetric overlap.
 
+   - In comparison the surface dice defines a boundary, adds an organ specific
+     tolerance representative of IOV and return the fraction of surface points
+     that are withing this tolerance and theoretically the fraction of surface
+     points that would not need to be corrected manually.
+
+** Modules required (54s)
+
+  - So, Deep learning models share a common set of modules that can be broken
+    down into data wrangling, training, and deployment stages.
+
+  - In terms of our dataset, each model we used an average of 20 patients split
+    into training, validation and testing subsets.
+
+  - In our training stage, we made heavy use of data augmentation to increase
+    the spread of our data distribution
+
+  - We then designed a 2D U-Net architecture by incorporating recent
+    modifications in the literature that indicated performance improvements.
+
+  - Additionally, we assessed the performance of multiple cost functions and
+    selected weighted dice cost as it was the only loss function that optimised
+    for all pelvic organs due to a significant pixel-wise class imbalance
+    between structures
+
+** Deployment (48s)
+
+  - In terms of model deployment, we were unable to preform inference locally at
+    clinic A due to hardware constraints. Therefore, we bridged a connection to
+    another clinic via an encrypted tunnel and were then able to communicate
+    between sites via the DICOM networking protocol.
+
+  - In practise, the treatment planning system exports an imaging series to a
+    remote DICOM server by issuing a storage request. After storage, the server
+    forwards the series to a tensorflow model that infers the contours. These
+    contours are translated to a dicom rt structure file that is then forwarded
+    back to the TPS by another storage request.
+
+  - This software was designed to handle multiple requests by storings jobs in
+    an inference queue.
+
+** Results (1.30m)
+
+  - Provide a visual overview of the contours generated by each model and how
+    they compare to experts. This is the pelvic imaging model. On the input
+    image the truth is outlined in yellow and the model prediction is outlined
+    in red. There is also a difference column that graphs a subtraction.
+
+*** Pelvic imaging model
+
+  - For patient contours we saw excellent agreement with the worst case observed
+    having a volumetric overlap score of over 99 percent.
+
+  - Bladder contours we observed some room for improvement. A recurring theme
+    of predictions was the under representation the posterior aspect of the
+    bladder.
+
+  - The worst case recorded a volumetric overlap of 67 percent, with the
+    surface coefficient indicating 30 percent of the border needed manual
+    correction. We suspect a broader dataset may improve performance here.
+
+  - As for rectum contours, again, we observed some room for improvement.
+
+  - Specifically, rectum regions containing gas were not correctly identified by
+    the model. We suspect an architecture that accepts 3D input may provide the
+    axial context required to interpolate the existence of the rectum in these
+    cases.
+
+*** Canine imaging model
+
+  - We are now examining vacuum bag contours from the canine model and again we
+    observed excellent agreement between model and expert with the lowest
+    scoring contours achieving a volumetric overlap of 90 percent.
+
+** Structure specific metrics (1m)
+
+ - Quantifying average values for each organ we observed that patient and
+   vacuum bag segmentation were within tolerances. Specifically the vacuum bag
+   contours have been accepted clinically under the condition that they are
+   verified by an RT.
+
+ - The literature defines clinically acceptable bladder and rectum agreement to
+   be a DSC greater than 0.7 - a 70 percent volume overlap. On average, were able achieve
+   this with contours. However in practise experts are able to achieve stronger
+   better agreement than this.
+
+ - However, in each case the sDSC indicates only 10 percent of border points
+   would need to be adjusted to be within the top 95th percentile of expert
+   agreement. This should correlate with low corrections times for these
+   contours.
+
+ - The take home message from this slide is that while the rectum and bladder
+   contours would aid clinicians as a starting reference, higher performance is
+   required before they have utility in a QA tool.
+
+** Conclusion and future research (1.40m)
+
+ - Patient contours within tolerances and are viable for use within the QA tool.
+
+ - Bladder and rectum contours may improve with a broader dataset. SOTA
+   implementations use at least an order of magnitude more data.
+
+ - In addition, 3D implementations may improve detection
+
+ - The canine imaging model was successfully deployed to clinic under a
+    prototype warning that requests manual verification. Acceptance testing has
+    shown a performance improvement of 30 minutes per patient. Currently being
+    utilised on all new canine patients.
+
+ - sDSC indicated stronger correlation with correction times in lit. To minimise
+   correction times we want to optimise for this directly. Currently accepts
+   only binary data so a continuous surrogate is needed for gradients to
+   be defined during training.
+
+** Other
 # ** Model architecture ()
 #    For those that havent seen before, this is what a 2D U-Net architecture looks
 #    like - I only want you to get a high level overview here.
@@ -99,112 +204,3 @@
 #    memory overhead that a larger kernel would include. By concatenating together
 #    multi-resolution feature representations we are able to detect, localise, and
 #    produce high-resolution border segmentation.
-
-#    7 minutes
-
-
-** Modules required (54s)
-
-   Deep learning models share a common set of modules that can be broken down into
-   data wrangling, training, and deployment stages.
-   # This slide lists the steps or coding packages that we had to develop in order
-   # to translate from an idea to the clinical.
-
-   Each model we used an average of 20 patients split into training, validation
-   and testing subsets.
-
-   Made heavy use of data augmentation to increase the spread of our data distribution
-
-   We used a 2D U-Net architecture and incorporated recent modifications that
-   indicated improved performance in the literature.
-
-   Additionally, we assessed the performance of multiple cost functions and
-   selected weighted dice as it was the only loss function that optimised for
-   all pelvic organs due to a significant pixel-wise class imbalance between
-   structures
-
-
-** Deployment (48s)
-
-   We were unable to preform inference locally at clinic A due to hardware
-   constraints. Therefore, we bridged a connection to another clinic via SSH and
-   were then able to communicate between sites via the DICOM networking protocol.
-
-   # We used pynetdicom as our networking protocol for building DICOM service
-   # class users and providers. A provider includes instructions for completing a
-   # task - i.e., how to store a set of images.
-   # While a class user requests to utilise the functionality of a provider -
-   # i.e., can you store these images.
-
-   The treatment planning system exports an imaging series to a remote DICOM server
-   by issuing a storage request. After storage, the server forwards the series to a
-   tensorflow model that infers the contours. These contours are translated to a
-   dicom rt structure file that is then forwarded back to the TPS by another
-   storage request.
-
-   This software was designed to handle multiple requests by storings jobs in an
-   inference queue.
-
-   --- 5m
-
-** Results (1.30m)
-   Visual overview of the contours generated by each model and how they compare
-   to experts. This is the pelvic imaging model. And on the input image the
-   truth is outlined in yellow and the model prediction is outlined in red.
-*** Pelvic imaging model
-    Patient contours we saw excellent agreement with the worst case observed
-    having a volumetric overlap score of over 99 percent.
-
-    Bladder contours we observed some room for improvement. A recurring theme of
-    predictions was the under represent the posterior aspect of the bladder. The
-    worst case recorded a volumetric overlap of 67 percent, with the surface
-    coefficient indicating that 30 percent of the border needing manual
-    correction. We suspect a broader dataset will improve performance.
-
-    Again with rectum contours we observed some room for improvement.
-    Specifically, regions containing gas were not correctly identified. We
-    suspect that a 3D model may provide the axial context for interpolation and
-    therefore and improve performance.
-
-*** Canine imaging model
-    Excellent agreement between model and expert with the lowest scoring
-    contours achieving a volumetric overlap of 91 percent.
-
-   --- 6.30m
-** Structure specific metrics (1m)
-   Both patient and vacuum bag segmentation are within tolerances. Specifically
-   the vacuum bag contours have been accepted clinically.
-
-   The literature defines clinically acceptable bladder and rectum agreement to
-   be a DSC greater than 0.7 - a 70 percent volume overlap. However on average
-   experts are able to achieve much better agreement than this.
-
-   The take home message from this slide is that while these contours would aid
-   clinicians as a starting reference, higher performance is required before
-   they have utility in a QA tool.
-
-   However, in each case the sDSC indicates only 10 percent of border points
-   would need to be adjusted to be within the top 95th percentile of expert
-   agreement. This should correlate with low corrections times.
-
-
-
-** Conclusion and future research (1.40m)
-   - Patient contours within tolerances and are viable for
-     use within the QA tool.
-   - Bladder and rectum contours may improve with a broader dataset.
-   - SOTA implementations use an order of magnitude more data.
-   - 3D implementations may improve detection - significant comp. costs involved.
-
-  - The canine imaging model was successfully deployed to clinic under a
-    prototype warning that requests manual verification. Acceptance testing has
-    shown a performance improvement of 30 minutes per patient. Currently being
-    utilised on all new canine patients.
-
- - sDSC indicated stronger correlation with correction times in lit. To minimise
-   correction times we want to optimise for this directly. Currently accepts
-   only binary data so a continuous surrogate is needed for gradients to
-   be defined during training.
-
- - This field moves fast. U-Net is no longer SOTA. Under a re-implementation we
-  would want to examine a new type of architecture name HR-Net.
