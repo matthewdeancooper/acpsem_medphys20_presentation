@@ -43,19 +43,17 @@
 \date[]{}
 
 % \institute[USyd]{\inst{1} The University of Sydney (USyd). School of Physics.
- \institute[]{\inst{1} The University of Sydney (USyd). School of Physics.
+\institute[]{\inst{1} Institute of Medical Physics, The University of Sydney
+	\vspace{1mm}
 
-	Institute of Medical Physics.
-	\vspace{2mm}
-
-	\inst{2} Riverina Cancer Care Centre (RCCC). Cancer Care Associates.
+	\inst{2} Riverina Cancer Care Centre, Cancer Care Associates.
 	\vspace{6mm}
 
 	\small \textbf{Thesis:} \href{https://github.com/matthewdeancooper/masters_thesis}{github.com/matthewdeancooper/masters\_thesis}
-	\vspace{1mm}
+	\vspace{2mm}
 
 	\textbf{Video overview:} \href{https://docs.pymedphys.com/background/autocontouring.html}{docs.pymedphys/com/background/autocontouring}
-	\vspace{7mm}
+	\vspace{10mm}
 
 	\noindent
 	\hspace{-0.25cm}
@@ -190,7 +188,7 @@
   \vspace{4mm}
   \begin{figure}
     \includegraphics[width=0.6\textwidth]{images/sDSC}
-    % \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
+    \caption{Clinical performance metric: Illustration of volume masks $M_{i}$, surfaces $S_{i}$, boundaries $B_{i}^{(\tau)}$ at organ specific tolerance $\tau$, and intersection of surface boundaries $S_{i} \cap B_{j}^{(\tau)}$. Value states the percentage of surface contoured within expert IOV.\footnotemark[3]}
   \end{figure}
   \footnotetext[3]{\fullcite{Nikolov_2018}}
 \end{frame}
@@ -340,9 +338,37 @@
 %%
 \begin{frame}{Modules - All happy models are alike...}
 \begin{figure}
-\includegraphics[width=0.85\textwidth]{images/modules}
-% \caption{Modules required for end-to-end deep learning model deployment}
+\includegraphics[width=0.85\textwidth]{images/modules_blank}
+\caption{Modules required for end-to-end deep learning model deployment}
 \end{figure}
+\end{frame}
+
+\begin{frame}{Modules - All happy models are alike...}
+  \begin{figure}
+    \includegraphics[width=0.85\textwidth]{images/modules_data}
+    \caption{Modules required for end-to-end deep learning model deployment}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Modules - All happy models are alike...}
+  \begin{figure}
+    \includegraphics[width=0.85\textwidth]{images/modules_augmentation}
+    \caption{Modules required for end-to-end deep learning model deployment}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Modules - All happy models are alike...}
+  \begin{figure}
+    \includegraphics[width=0.85\textwidth]{images/modules_model}
+    \caption{Modules required for end-to-end deep learning model deployment}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Modules - All happy models are alike...}
+  \begin{figure}
+    \includegraphics[width=0.85\textwidth]{images/modules_loss}
+    \caption{Modules required for end-to-end deep learning model deployment}
+  \end{figure}
 \end{frame}
 
 
@@ -351,7 +377,7 @@
 \begin{frame}{Deployment - DICOM networking}
 \begin{figure}
 \includegraphics[width=0.75\textwidth]{images/dicom_networking}
-% \caption{TPS exports to remote server via DICOM networking protocol}
+\caption{TPS exports to remote server via DICOM networking protocol}
 \end{figure}
 \end{frame}
 %
@@ -381,26 +407,38 @@
 % ---------------------------- FRAME ---------------------------------
 
 %%
-\begin{frame}{Pelvic imaging - Patient}
+% \begin{frame}{Pelvic imaging model - Patient}
+  \begin{frame}{}
   \begin{figure}
-    \includegraphics[width=0.65\textwidth]{images/prostate_patient}
-    % \caption{Representative output for \textbf{patient}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
+    \includegraphics[width=0.60\textwidth]{images/prostate_patient}
+    \caption{Representative output for \textbf{patient}. Truth contour (yellow),
+      prediction contour (red). Metrics: Dice similarity coefficient (DSC), and
+      mean surface distance (MSD) in mm.}
   \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Pelvic imaging - Bladder}
+% \begin{frame}{Pelvic imaging model - Bladder}
+  \begin{frame}{}
   \begin{figure}
-    \includegraphics[width=0.65\textwidth]{images/prostate_bladder}
-    % \caption{Representative output for \textbf{bladder}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm. sDSC calculated at $\tau$ of 1.46 mm.}
+    \includegraphics[width=0.60\textwidth]{images/prostate_bladder}
+    \caption{Representative output for \textbf{bladder}. Truth contour (yellow),
+      prediction contour (red).
+      Metrics: Dice coefficient (DSC), surface dice coefficient (sDSC), and mean
+      surface distance (MSD) in mm}
   \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Pelvic imaging - Rectum}
+\begin{frame}{}
+  % \begin{frame}{Pelvic imaging model - Rectum}
   \begin{figure}
-    \includegraphics[width=0.65\textwidth]{images/prostate_rectum}
+    \includegraphics[width=0.60\textwidth]{images/prostate_rectum}
     % \caption{Representative output for \textbf{rectum}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm. sDSC calculated at $\tau$ of 6.99 mm.}
+    \caption{Representative output for \textbf{rectum}. Truth contour (yellow),
+      prediction contour (red).
+      Metrics: Dice coefficient (DSC), surface dice coefficient (sDSC), and mean
+      surface distance (MSD) in mm}
   \end{figure}
 \end{frame}
 %
@@ -414,17 +452,21 @@
 % \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Canine imaging - Vacuum bag}
+% \begin{frame}{Canine imaging model - Vacuum bag}
+  \begin{frame}{}
 \begin{figure}
 \includegraphics[width=0.665\textwidth]{images/vet_vacbag}
 % \caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow), prediction contour (red). Mean surface distance (MSD) mm.}
+\caption{Representative output for \textbf{vacuum bag}. Truth contour (yellow),
+  prediction contour (red). Metrics: Dice similarity coefficient (DSC), and mean
+  surface distance (MSD) in mm.}
 \end{figure}
 \end{frame}
 %
 % ---------------------------- FRAME ---------------------------------
 \section{Discussion}
 \begin{frame}{Structure averaged metrics}
-\input{tables/metrics}
+\input{tables/metrics_presentation}
 
 \vspace{4mm}
 % \begin{itemize}
@@ -432,12 +474,13 @@
 % \end{itemize}
 
 \vspace{4mm}
-\textbf{Cf. Expert IOV.}\footnotemark[2]
+\textbf{Cf. expert IOV.}\footnotemark[2]
 \begin{itemize}
 \item Clinically 'acceptable' bladder and rectum DSC $\geq$ 0.7
 % \item 'Excellent agreement' observed for expert rectum and bladder contours.
-\item Bladder:  DSC 0.93 $\pm$ 0.03, MSD 0.9(0.3) mm.
-\item Rectum:  DSC 0.81 $\pm$ 0.07, MSD 3(2) mm.
+% \item Bladder:  DSC 0.93 $\pm$ 0.03, MSD 0.9(0.3) mm.
+\item Bladder:  DSC 0.93(3), MSD 0.9(3) mm.
+\item Rectum:  DSC 0.81(7), MSD 3(2) mm.
   % \item Organ specific tolerance $\tau$ = MSD$_{95}$ (ie. Top 95\% expert performance).\footnotemark[3]
 \end{itemize}
 \footnotetext[2]{\fullcite{Roach_2019}}
