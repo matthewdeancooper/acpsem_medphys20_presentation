@@ -93,8 +93,8 @@
     contours are translated to a dicom rt structure file that is then forwarded
     back to the TPS by another storage request.
 
-  # - This software was designed to handle multiple requests by storings jobs in
-  #   an inference queue.
+  - This software was designed to handle multiple requests by storings jobs in
+    an inference queue.
 
 ** Results (1.30m)
 
