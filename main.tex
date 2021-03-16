@@ -49,13 +49,13 @@
 	\vspace{1mm}
 
 	\inst{2} Riverina Cancer Care Centre, Cancer Care Associates.
-	\vspace{6mm}
+	\vspace{8mm}
 
 	\small \textbf{Thesis:} \href{https://github.com/matthewdeancooper/masters_thesis}{github.com/matthewdeancooper/masters\_thesis}
-	\vspace{2mm}
+	% \vspace{2mm}
 
-	\textbf{Video overview:} \href{https://docs.pymedphys.com/background/autocontouring.html}{docs.pymedphys.com/background/autocontouring}
-	\vspace{10mm}
+	% \textbf{Video overview:} \href{https://docs.pymedphys.com/background/autocontouring.html}{docs.pymedphys.com/background/autocontouring}
+	\vspace{14mm}
 
 	\noindent
 	\hspace{-0.25cm}
@@ -98,7 +98,7 @@
 %\end{frame}
 
 % ---------------------------- FRAME ---------------------------------
-\begin{frame}{Contouring - Current limitations }
+\begin{frame}{Contouring - Current limitations in RT.}
 \textbf{Variability}
 \begin{itemize}
 \item Large intra and inter-observer variance (IOV).\footnotemark[1]
@@ -177,7 +177,7 @@
 \begin{frame}{Performance - Surface dice similarity coefficient (sDSC)}
   \begin{equation*}
     DSC_{1,2} = \frac{2|M_{1} \cap M_{2}|}{|M_{1}| + |M_{2}|}
-    \label{eq:sDSC}
+    \label{eq:DSC}
   \end{equation*}
 
   \vspace{4mm}
@@ -359,19 +359,72 @@
   \end{figure}
 \end{frame}
 
-\begin{frame}{All happy models are alike...}
+
+\begin{frame}{Method: Data augmentation}
+
   \begin{figure}
-    \includegraphics[width=0.85\textwidth]{images/modules_augmentation}
-    \caption{Modules required for end-to-end deep learning model deployment.}
+    \includegraphics[width=0.75\textwidth]{images/augment}
+    \caption{Data augmentation to improve model robustness.}
   \end{figure}
+  % \begin{itemize}
+  % \item Small datasets a common challenge in medical imaging.\footnotemark[8]
+  % \item \textbf{Augmentation:} Increase effective dataset size
+
+
+  %   ie. $\uparrow$ training data variance $\implies$ $\uparrow$ model robustness.\footnotemark[4]$^{,}$\footnotemark[9]
+  %   \begin{itemize}
+  %   \item L/R image flip
+  %   \item Random crop and resize
+  %   \item Elastic \& affine deformations
+  %   \item Gaussian noise
+  %   \end{itemize}
+  %   % 
+  % \item \textbf{Input normalisation}
+  %   \begin{itemize}
+  %   \item Reduces skew in loss topology $\implies$ accelerate gradient descent (learning).\footnotemark[10]
+  %   \end{itemize}
+  % \end{itemize}
+
+
+  % \footnotetext[3]{\fullcite{Nikolov_2018}}
+  % \footnotetext[8]{\fullcite{Ronneberger_2015}}
+  % \footnotetext[9]{\fullcite{Maier2019}}
+  % \footnotetext[10]{\fullcite{zhou2018normalization}}
 \end{frame}
 
-\begin{frame}{All happy models are alike...}
-  \begin{figure}
-    \includegraphics[width=0.85\textwidth]{images/modules_model}
-    \caption{Modules required for end-to-end deep learning model deployment.}
-  \end{figure}
+
+\begin{frame}{}
+\begin{figure}
+\includegraphics[width=1.0\textwidth]{images/model_diagram}
+\caption{Modified 2D U-net architecture:\footnotemark[8] Composed of encoding (blue) and decoding blocks (yellow). MaxPooling layers replaced by strided convolution\footnotemark[11]. Added batch normalisation\footnotemark[12] and final sigmoid activation.\footnotemark[3] Tensor dimensions (Batch size, X, Y, Channels).}
+\end{figure}
+\footnotetext[3]{\fullcite{Nikolov_2018}}
+\footnotetext[8]{\fullcite{Ronneberger_2015}}
+\footnotetext[11]{\fullcite{springenberg2014}}
+\footnotetext[12]{\fullcite{ioffe2015batch}}
 \end{frame}
+%
+\begin{frame}{Method: Why downsample?}
+\begin{figure}
+	\includegraphics[width=0.75\textwidth]{images/downsampling}
+	\caption{Multi-resolution analysis: Edge detection shown over encoder-decoder pathway: $\downarrow$ resolution $\implies$ $\uparrow$ relative kernel size (grey) to extract coarser (high level) image features for general localisation. Concatenate with high resolution features for local border segmentation.\footnotemark[6]}
+\end{figure}
+\footnotetext[6]{\fullcite{Nemoto_2020}}
+\end{frame}
+
+% \begin{frame}{All happy models are alike...}
+%   \begin{figure}
+%     \includegraphics[width=0.85\textwidth]{images/modules_augmentation}
+%     \caption{Modules required for end-to-end deep learning model deployment.}
+%   \end{figure}
+% \end{frame}
+
+% \begin{frame}{All happy models are alike...}
+%   \begin{figure}
+%     \includegraphics[width=0.85\textwidth]{images/modules_model}
+%     \caption{Modules required for end-to-end deep learning model deployment.}
+%   \end{figure}
+% \end{frame}
 
 \begin{frame}{All happy models are alike...}
   \begin{figure}
@@ -553,38 +606,38 @@
 %
 
 % ---------------------------- FRAME ---------------------------------
-\section{Summary}
-\begin{frame}{Conclusion and future work}
-\textbf{Pelvic imaging model:}
-\begin{itemize}
-	\item Patient contouring within tolerances.
-	\item Suspect more data will improve bladder and rectum segmentation.
-	\item 3D architecture may improve detection of gaseous rectal volumes.
+% \section{Summary}
+% \begin{frame}{Conclusion and future work}
+% \textbf{Pelvic imaging model:}
+% \begin{itemize}
+% 	\item Patient contouring within tolerances.
+% 	\item Suspect more data will improve bladder and rectum segmentation.
+% 	\item 3D architecture may improve detection of gaseous rectal volumes.
 	 % - cf. S.O.T.A commercial DL solution (0.97, 0.79).\footnotemark[15]
 
 	% S.O.T.A open-source DL solution (0.95, 0.92).\footnotemark[16]
 	% \item Majority of surface correctly defined within tolerances for bladder and rectum
 	% (sDSC 0.876, 0.922).
 	% \item Weighted DSC loss significantly improved performance on class imbalanced data.
-  \end{itemize}
-  \vspace{4mm}
+  % \end{itemize}
+  % \vspace{4mm}
 
- \textbf{Canine imaging model:}
- \begin{itemize}
-  \item Successfully deployed to clinic under a prototype warning.
-  \item Performance improvement of approximately 30 minutes per patient.
-\end{itemize}
-% \footnotetext[15]{\fullcite{Wong2020}}
-% \footnotetext[16]{\fullcite{Kazemifar_2018}}
-\vspace{4mm}
+%  \textbf{Canine imaging model:}
+%  \begin{itemize}
+%   \item Successfully deployed to clinic under a prototype warning.
+%   \item Performance improvement of approximately 30 minutes per patient.
+% \end{itemize}
+% % \footnotetext[15]{\fullcite{Wong2020}}
+% % \footnotetext[16]{\fullcite{Kazemifar_2018}}
+% \vspace{4mm}
 
-\textbf{Future}
-\begin{itemize}
-\item Develop a continuous valued surrogate for sDSC to optimise directly.
-% \item U-Net no longer S.O.T.A $\implies$ HR-Net.\footnotemark[16]
-\end{itemize}
-% \footnotetext[16]{\fullcite{Wang2020Deep}}
-\end{frame}
+% \textbf{Future}
+% \begin{itemize}
+% \item Develop a continuous valued surrogate for sDSC to optimise directly.
+% % \item U-Net no longer S.O.T.A $\implies$ HR-Net.\footnotemark[16]
+% \end{itemize}
+% % \footnotetext[16]{\fullcite{Wang2020Deep}}
+% \end{frame}
 
 
 \begin{frame}{Questions}
@@ -592,9 +645,8 @@
     \includegraphics[width=0.90\textwidth]{images/demo}
   \end{figure}
   \centering
-  \textbf{Video overview:} \href{https://docs.pymedphys.com/background/autocontouring.html}{docs.pymedphys.com/background/autocontouring}
+  \textbf{Video overview:} \href{https://youtu.be/fMCv5i6GJWI}{https://youtu.be/fMCv5i6GJWI}
 \end{frame}
-%
 % ---------------------------- FRAME ---------------------------------
 % \begin{frame}{Conclusion: Future work}
 % \textbf{Post-project goals:}

@@ -1,9 +1,6 @@
 * Presentation
 ** Introduction (15s)
 
-  - Hello everyone my name is Matthew Cooper and I am recent graduate from the
-    master of medical physics degree at the university of Sydney
-
   - The title of today's presentation is "A clinical implementation of deep
     learning: Automatic contouring via U-Net architecture".
 
@@ -12,19 +9,19 @@
    - Accurate contouring is a critical aspect of safe and effective treatment
      delivery in radiotherapy. However, there are current clinical limitations.
 
-   - There exists variance in the definitions of anatomical regions between
+   - There is variance in the definition of anatomical regions between
      medical experts from imaging data. This is referred to as inter
      observer variance or IOV and is often cited as the largest source of error
      in treatment delivery.
 
-   - In addition, a TG275 risk assessment highlighted multiple
-     human-factor failure modes in RT relating to contour generation.
+   - The TG275 risk assessment highlights multiple
+     human-factor failure modes in RT relating incorrect contouring.
 
    - There are also time contrasts involved in contouring and computer aided
-     techniques such as atlas methods still require significant correction
+     techniques such as deformable registration (or atlas) methods still require significant correction
      times.
 
-   - Recently, deep learning models have demonstrated the potential to overcome
+   - Deep learning models have demonstrated the potential to overcome
      these limitations. When used as a starting reference they have been shown
      to reduce variance between observers and decrease total contouring time.
      They have also demonstrated significant improvements compared to atlas
@@ -32,16 +29,17 @@
 
 ** Application (50s)
 
-   - In an attempt to meet these limitations, this study designed and evaluated a
+   - In an attempt to meet these limitations, this study designed a
      2D U-Net architecture with two primary aims:
 
    - Model 1 was designed as a QA tool for prostate cancer, we compared expert
-     contours with model predictions in an attempt identify macro contouring
-     errors. Here we contoured patient, bladder and rectum volumes.
+     contours with model predictions in an attempt to alert clinical staff of
+     macro contouring errors. Here we contoured patient, bladder and rectum
+     volumes.
 
    - Model 2 was designed to automate a time consuming aspect of canine RT,
      vacuum bag segmentation. Previously, vacuum bags were delineated manually
-     at clinic with a reported completion time of 30 minutes per patient.
+     at clinic, at a cost of 30 minutes per patient.
 
    - To achieve these aims would require model performance similar to that of
      human experts. To quantify performance we used the surface dice
@@ -70,16 +68,52 @@
     into training, validation and testing subsets.
 
   - In our training stage, we made heavy use of data augmentation to increase
-    the spread of our data distribution
+    the spread of our data distribution. Idea is to expose the model to
+    biological deformations to produce a robust model that is invariant to
+    transformation it will likely observe in the wild. We used a combination of
+    linear and non-linear transformation techniques.
 
-  - We designed a 2D U-Net architecture by collating recent
-    modifications that indicated improved performance in the literature.
+*** Model architecture ()
+   For those that havent seen before, this is what a 2D U-Net architecture looks
+   like - I only want you to get a high level overview here.
 
-  - Additionally, we assessed the performance of multiple cost functions and
-    selected weighted dice as it was the only function that optimised
-    for all pelvic organs due to a significant pixel-wise class imbalance
-    between structures
+   It is composed of two primary pathways:
 
+   1 - On the LHS we have the encoding pathway (in blue) that down-samples the resolution
+   of the input at each level while increasing the number of features that have
+   been extracted via convolutional operations.
+   2 - On the RHS we have the decoding pathway (in yellow) that up-samples
+   low resolution features, concatenates them with higher resolution features sent
+   from the residual connection.
+
+   If you remember one thing from this busy slide I want you to notice the
+   pattern of decreasing the spatial resolution, recovering the spatial
+   resolution, and concatenating it with higher resolution features.
+
+   
+*** Why down sample
+    
+   Why do we see this pattern? Goal is to facilitate
+   multi-resolution analysis. Each convolutional 
+   operation is limited to only a small neighbourhood of values. If you
+   imagine keeping the size of a kernel constant - seen in grey -
+   while reducing the resolution of the image, we are effectively increasing the
+   relative size of the kernel, allowing for the extraction of spatially broader
+   features (general localisation) without the memory overhead that a larger
+   kernel would include. By concatenating together multi-resolution features we
+   are able to detect, localise, and produce high-resolution border
+   segmentation.
+   
+   
+*** Performance
+    In terms of model performance, we evaluated multiple cost functions and
+    selected weighted dice as it was the only function that optimised for all
+    pelvic organs. This was due to a significant pixel-wise class imbalance
+    between structures. The total volume of the rectum is much smaller than the
+    patient, but we the optimisation algorithm to be independent of organ size,
+    so we calculate weights to give each organ equal importance.
+
+    
 ** Deployment (48s)
 
   - In terms of model deployment, we were unable to preform inference locally at
@@ -94,7 +128,7 @@
     back to the TPS by another storage request.
 
   - This software was designed to handle multiple requests by storings jobs in
-    an inference queue.
+    a thread safe queue for inference.
 
 ** Results (1.30m)
 
@@ -124,12 +158,14 @@
     axial context required to interpolate the existence of the rectum in these
     cases.
 
+    
 *** Canine imaging model
 
   - We are now examining vacuum bag contours from the canine model and again we
     observed excellent agreement between model and expert with the lowest
     scoring contours achieving a volumetric overlap of 90 percent.
 
+    
 ** Structure specific metrics (1m)
 
  - Quantifying average values for each organ we observed that patient and
@@ -138,11 +174,11 @@
    verified by an RT.
 
  - The literature defines clinically acceptable bladder and rectum agreement to
-   be a DSC greater than 0.7 - a 70 percent volume overlap. On average, were able achieve
-   this with contours. However in practise experts are able to achieve stronger
-   better agreement than this.
+   be a DSC greater than 0.7 - a 70 percent volume overlap. On average, were
+   able achieve this. although in practise experts are able to
+   achieve stronger agreement than this.
 
- - However, in each case the sDSC indicates only 10 percent of border points
+ - In each case the sDSC indicates only 10 percent of border points
    would need to be adjusted to be within the top 95th percentile of expert
    agreement. This should correlate with low corrections times for these
    contours.
@@ -150,56 +186,3 @@
  - The take home message from this slide is that while the rectum and bladder
    contours would aid clinicians as a starting reference, higher performance is
    required before they have utility in a QA tool.
-
-** Conclusion and future research (1.40m)
-
- - Patient contours within tolerances and are viable for use within the QA tool.
-
- - Bladder and rectum contours may improve with a broader dataset. SOTA
-   implementations use at least an order of magnitude more data.
-
- - In addition, 3D implementations may improve detection
-
- - The canine imaging model was successfully deployed to clinic under a
-   prototype warning. Acceptance testing has shown a performance improvement of
-   30 minutes per patient. Currently being utilised on all new canine patients.
-
-- Opportunity to develop a continuous valued surrogate for the sDSC, this would
-  allow for the direct optimisation of a metric that has indicated a stronger
-  correlation with correction times than traditional metrics.
-
-** Other
-# ** Model architecture ()
-#    For those that havent seen before, this is what a 2D U-Net architecture looks
-#    like - I only want you to get a high level overview here.
-
-#    It is composed of two primary pathways:
-
-#    1 - On the LHS we have the encoding pathway (in blue) that down-samples the resolution
-#    of the input at each level while increasing the number of features that have
-#    been extracted via convolutional operations.
-#    2 - On the RHS we have the decoding pathway (in yellow) that up-samples
-#    low resolution features, concatenates them with higher resolution features sent
-#    from the residual connection.
-
-#    If you remember one thing from this busy slide I want you to notice the
-#    pattern of decreasing the spatial resolution, recovering the spatial
-#    resolution, and concatenating it with higher resolution features.
-
-
-# ** Why down sample
-#    1 - Reduces the total size of feature representations. Currently there are
-#    hard GPU memory constraints that limit the depth, resolution, and complexity
-#    of model architecture. The success in computer vision is in part due to
-#    convolutional operations encoding some fundamental assumptions about our data
-#    into our model and reducing the number of trainable parameters when compared
-#    to fully connected networks.
-
-#    2 - Additionally, leverage down-sampling to facilitate multi-resolution
-#    analysis. If you imagine keeping the size of a convolutional kernel
-#    constant - seen in grey - while reducing the resolution of the image, we are
-#    effectively increasing the relative size of the kernel, allowing for the
-#    extraction of spatially broader features (general localisation) without the
-#    memory overhead that a larger kernel would include. By concatenating together
-#    multi-resolution feature representations we are able to detect, localise, and
-#    produce high-resolution border segmentation.
